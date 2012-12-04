@@ -1,0 +1,47 @@
+--- origsrc/libbsd-0.4.2/src/Makefile.am	2012-06-27 02:15:12.000000000 -0500
++++ src/libbsd-0.4.2/src/Makefile.am	2012-12-03 00:37:43.384163600 -0600
+@@ -34,6 +34,7 @@ libbsd_la_DEPENDENCIES = \
+ 	libbsd.map
+ libbsd_la_LDFLAGS = \
+ 	-Wl,--version-script=$(srcdir)/libbsd.map \
++	-no-undefined \
+ 	-version-number 0:4:2
+ libbsd_la_SOURCES = \
+ 	arc4random.c \
+--- origsrc/libbsd-0.4.2/src/getpeereid.c	2012-05-29 00:30:56.000000000 -0500
++++ src/libbsd-0.4.2/src/getpeereid.c	2012-12-03 00:40:55.178614400 -0600
+@@ -40,7 +40,7 @@ int
+ getpeereid(int s, uid_t *euid, gid_t *egid)
+ {
+ /* XXX: This should be autodetected at build time instead. */
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__CYGWIN__)
+ 	struct ucred cred;
+ #elif defined(__OpenBSD__)
+ 	struct sockpeercred cred;
+--- origsrc/libbsd-0.4.2/src/nlist.c	2012-05-29 00:29:19.000000000 -0500
++++ src/libbsd-0.4.2/src/nlist.c	2012-12-03 22:53:20.126830700 -0600
+@@ -44,10 +44,23 @@ static char sccsid[] = "@(#)nlist.c	8.1
+ #include <string.h>
+ #include <unistd.h>
+ 
++#ifdef __CYGWIN__
++struct nlist {
++	union {
++		char	*n_name;
++		long	n_strx;
++	} n_un;
++	unsigned char	n_type;
++	char		n_other;
++	short		n_desc;
++	unsigned long	n_value;
++};
++#else
+ #if !defined(__NO_A_OUT_SUPPORT)
+ #define _NLIST_DO_AOUT
+ #endif
+ #define _NLIST_DO_ELF
++#endif
+ 
+ #ifdef _NLIST_DO_ELF
+ #include "local-elf.h"

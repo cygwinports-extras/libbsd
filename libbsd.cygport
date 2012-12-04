@@ -1,0 +1,18 @@
+NAME="libbsd"
+VERSION=0.4.2
+RELEASE=1
+CATEGORY="Libs"
+SUMMARY="Library providing BSD-specific functions"
+DESCRIPTION="This library provides useful functions commonly found on BSD
+systems, and lacking on others like GNU systems, thus making it easier to port
+projects with strong BSD origins, without needing to embed the same code over
+and over again on each project."
+HOMEPAGE="http://libbsd.freedesktop.org/"
+SRC_URI="http://libbsd.freedesktop.org/releases/${NAME}-${VERSION}.tar.gz"
+PATCH_URI="0.4.2-cygwin.patch"
+
+PKG_NAMES="libbsd0 libbsd-devel"
+libbsd0_CONTENTS="usr/bin/cygbsd-0.dll usr/share/doc/"
+libbsd_devel_CONTENTS="usr/include/ usr/lib/ usr/share/man/man3/"
+
+KEEP_LA_FILES="none"
