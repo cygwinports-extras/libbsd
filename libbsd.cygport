@@ -1,6 +1,6 @@
 NAME="libbsd"
 VERSION=0.4.2
-RELEASE=1
+RELEASE=2
 CATEGORY="Libs"
 SUMMARY="Library providing BSD-specific functions"
 DESCRIPTION="This library provides useful functions commonly found on BSD
