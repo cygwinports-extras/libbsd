@@ -9,7 +9,8 @@ projects with strong BSD origins, without needing to embed the same code over
 and over again on each project."
 HOMEPAGE="http://libbsd.freedesktop.org/"
 SRC_URI="http://libbsd.freedesktop.org/releases/${NAME}-${VERSION}.tar.gz"
-PATCH_URI="0.4.2-cygwin.patch"
+PATCH_URI="0.4.2-cygwin.patch
+           0.4.2-libc-funcs.patch"
 
 PKG_NAMES="libbsd0 libbsd-devel"
 libbsd0_CONTENTS="usr/bin/cygbsd-0.dll usr/share/doc/"

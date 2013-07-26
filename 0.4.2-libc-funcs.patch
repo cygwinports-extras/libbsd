@@ -1,0 +1,159 @@
+--- origsrc/libbsd-0.4.2/configure.ac	2012-06-03 00:45:35.000000000 -0500
++++ src/libbsd-0.4.2/configure.ac	2013-07-26 06:41:21.997289500 -0500
+@@ -72,6 +72,7 @@ AC_LINK_IFELSE(
+ 	[AC_MSG_RESULT([no])])
+ 
+ AC_CHECK_FUNCS([dirfd __fpurge getexecname getline sysconf])
++AC_CHECK_FUNCS([arc4random fpurge getpeereid getprogname reallocf setprogname strlcat strlcpy])
+ 
+ AC_CONFIG_FILES([
+ 	Makefile
+--- origsrc/libbsd-0.4.2/man/Makefile.am	2012-05-29 00:30:56.000000000 -0500
++++ src/libbsd-0.4.2/man/Makefile.am	2013-07-26 06:45:51.466702300 -0500
+@@ -14,11 +14,6 @@ md5.3bsd: $(srcdir)/mdX.3bsd
+ 	$(AM_V_GEN) sed $(SED_MD5_SUBST) $< > $@
+ 
+ dist_man_MANS = \
+-	arc4random.3 \
+-	arc4random_addrandom.3 \
+-	arc4random_buf.3 \
+-	arc4random_stir.3 \
+-	arc4random_uniform.3 \
+ 	bitstring.3 \
+ 	closefrom.3 \
+ 	dehumanize_number.3 \
+@@ -27,8 +22,6 @@ dist_man_MANS = \
+ 	flopen.3 \
+ 	fmtcheck.3 \
+ 	getmode.3 \
+-	getpeereid.3 \
+-	getprogname.3 \
+ 	heapsort.3 \
+ 	humanize_number.3 \
+ 	md5.3bsd \
+@@ -41,10 +34,7 @@ dist_man_MANS = \
+ 	reallocf.3 \
+ 	setmode.3 \
+ 	setproctitle.3 \
+-	setprogname.3 \
+ 	sradixsort.3 \
+-	strlcat.3 \
+-	strlcpy.3 \
+ 	strmode.3 \
+ 	strtonum.3 \
+ 	tree.3 \
+--- origsrc/libbsd-0.4.2/src/arc4random.c	2010-01-10 08:29:50.000000000 -0600
++++ src/libbsd-0.4.2/src/arc4random.c	2013-07-26 06:33:58.000000000 -0500
+@@ -31,6 +31,7 @@
+  *
+  * RC4 is a registered trademark of RSA Laboratories.
+  */
++#ifndef HAVE_ARC4RANDOM
+ 
+ #include <sys/cdefs.h>
+ __FBSDID("$FreeBSD$");
+@@ -294,3 +295,4 @@ main(int argc, char **argv)
+ 	printf("%qd cycles\n", v);
+ }
+ #endif
++#endif /* !HAVE_ARC4RANDOM */
+--- origsrc/libbsd-0.4.2/src/fpurge.c	2012-05-29 00:30:56.000000000 -0500
++++ src/libbsd-0.4.2/src/fpurge.c	2013-07-26 06:40:49.622437800 -0500
+@@ -23,6 +23,7 @@
+  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
++#ifndef HAVE_FPURGE
+ 
+ #include <errno.h>
+ #include <stdio.h>
+@@ -64,3 +65,4 @@ main()
+ 	return 0;
+ }
+ #endif
++#endif /* !HAVE_FPURGE */
+--- origsrc/libbsd-0.4.2/src/getpeereid.c	2012-05-29 00:30:56.000000000 -0500
++++ src/libbsd-0.4.2/src/getpeereid.c	2013-07-26 06:35:19.729569000 -0500
+@@ -23,6 +23,7 @@
+  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
++#ifndef HAVE_GETPEEREID
+ 
+ #include <sys/cdefs.h>
+ 
+@@ -130,3 +131,4 @@ getpeereid(int s, uid_t *euid, gid_t *eg
+ 	return 0;
+ }
+ #endif
++#endif /* !HAVE_GETPEERID */
+--- origsrc/libbsd-0.4.2/src/progname.c	2012-05-29 00:30:56.000000000 -0500
++++ src/libbsd-0.4.2/src/progname.c	2013-07-26 06:33:58.000000000 -0500
+@@ -39,6 +39,7 @@ extern const char *__progname;
+ static const char *__progname = NULL;
+ #endif
+ 
++#ifndef HAVE_GETPROGNAME
+ const char *
+ getprogname(void)
+ {
+@@ -53,7 +54,9 @@ getprogname(void)
+ 
+ 	return __progname;
+ }
++#endif /* HAVE_GETPROGNAME */
+ 
++#ifndef HAVE_SETPROGNAME
+ void
+ setprogname(const char *progname)
+ {
+@@ -65,3 +68,4 @@ setprogname(const char *progname)
+ 	else
+ 		__progname = last_slash + 1;
+ }
++#endif /* HAVE_SETPROGNAME */
+--- origsrc/libbsd-0.4.2/src/reallocf.c	2011-02-23 07:44:37.000000000 -0600
++++ src/libbsd-0.4.2/src/reallocf.c	2013-07-26 06:33:58.000000000 -0500
+@@ -23,6 +23,7 @@
+  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+  * SUCH DAMAGE.
+  */
++#ifndef HAVE_REALLOCF
+ 
+ #include <sys/cdefs.h>
+ __FBSDID("$FreeBSD$");
+@@ -46,3 +47,4 @@ reallocf(void *ptr, size_t size)
+ 		free(ptr);
+ 	return (nptr);
+ }
++#endif /* HAVE_REALLOCF */
+--- origsrc/libbsd-0.4.2/src/strlcat.c	2010-01-10 08:29:51.000000000 -0600
++++ src/libbsd-0.4.2/src/strlcat.c	2013-07-26 06:33:58.000000000 -0500
+@@ -15,6 +15,7 @@
+  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
++#ifndef HAVE_STRLCAT
+ 
+ #include <sys/types.h>
+ #include <string.h>
+@@ -53,3 +54,4 @@ strlcat(char *dst, const char *src, size
+ 
+ 	return(dlen + (s - src));	/* count does not include NUL */
+ }
++#endif /* HAVE_STRLCAT */
+--- origsrc/libbsd-0.4.2/src/strlcpy.c	2010-01-10 08:29:51.000000000 -0600
++++ src/libbsd-0.4.2/src/strlcpy.c	2013-07-26 06:33:58.000000000 -0500
+@@ -15,6 +15,7 @@
+  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
++#ifndef HAVE_STRLCPY
+ 
+ #include <sys/types.h>
+ #include <string.h>
+@@ -49,3 +50,4 @@ strlcpy(char *dst, const char *src, size
+ 
+ 	return(s - src - 1);	/* count does not include NUL */
+ }
++#endif /* HAVE_STRLCPY */
